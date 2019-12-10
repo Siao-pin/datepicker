@@ -111,3 +111,33 @@ export const getNextMonth = (month, year) => {
 
   return { month: nextMonth, year: nextMonthYear };
 };
+
+export default (month = THIS_MONTH, year = THIS_YEAR) => {
+  const monthDays = getMonthDays(month, year);
+  const monthFirstDay = getMonthFirstDay(month, year);
+  
+  const daysFromPrevMonth = monthFirstDay - 1;
+  const daysFromNextMonth = (CALENDAR_WEEKS * 7) - (daysFromPrevMonth + monthDays);
+  
+  const { month: prevMonth, year: prevMonthYear } = getPreviousMonth(month, year);
+  const { month: nextMonth, year: nextMonthYear } = getNextMonth(month, year);
+  
+  const prevMonthDays = getMonthDays(prevMonth, prevMonthYear);
+  
+  const prevMonthDates = [...new Array(daysFromPrevMonth)].map((n, index) => {
+    const day = index + 1 + (prevMonthDays - daysFromPrevMonth);
+    return [ prevMonthYear, zeroPad(prevMonth, 2), zeroPad(day, 2) ];
+  });
+  
+  const thisMonthDates = [...new Array(monthDays)].map((n, index) => {
+    const day = index + 1;
+    return [year, zeroPad(month, 2), zeroPad(day, 2)];
+  });
+
+  const nextMonthDates = [...new Array(daysFromNextMonth)].map((n, index) => {
+    const day = index + 1;
+    return [nextMonthYear, zeroPad(nextMonth, 2), zeroPad(day, 2)];
+  });
+  
+  return [...prevMonthDates, ...thisMonthDates, ...nextMonthDates];
+};
