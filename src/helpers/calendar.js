@@ -44,7 +44,8 @@ export const getMonthDays = (month = THIS_MONTH, year = THIS_YEAR) => {
 };
 
 export const getMonthFirstDay = (month = THIS_MONTH, year = THIS_YEAR) => {
-  return +(new Date(`${year}-${zeroPad(month, 2)}-01`).getDay()) + 1;  
+  const dayNum = +(new Date(`${year}-${zeroPad(month, 2)}-01`).getDay());
+  return dayNum - (dayNum === 0 ? -6 : 1) + 1;
 };
 
 export const isDate = date => {
@@ -86,7 +87,7 @@ export const isSameDay = (date, basedate = new Date()) => {
     && (+basedateYear === +dateYear);
 };
 
-export const getDateISO = (date = new Date) => {
+export const getDateISO = (date = new Date()) => {
 
   if (!isDate(date)) return null;
 
