@@ -3,6 +3,7 @@ import { FormGroup, Label, Input, Dropdown, DropdownToggle, DropdownMenu } from 
 
 export const DatePickerContainer = styled.div`
   position: relative;
+  width: 400px;
 `;
 
 export const DatePickerFormGroup = styled(FormGroup)`

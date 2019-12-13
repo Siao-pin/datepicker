@@ -13,7 +13,11 @@ import calendar, {
 } from '../../helpers/calendar';
 
 class Calendar extends Component {
-  state = {...this.resolveStateFromProp(), today: new Date()};
+  state = {
+    ...this.resolveStateFromProp(), 
+    today: new Date(),
+    isTimepickerOpen: false,
+  };
  
   resolveStateFromDate(date) {
     const isDateObject = isDate(date);

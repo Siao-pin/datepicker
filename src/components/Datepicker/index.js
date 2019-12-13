@@ -5,7 +5,7 @@ import * as Styled from './styles';
 import { isDate, getDateISO } from "../../helpers/calendar";
 
 class Datepicker extends Component {
-  state = { date: null, calendarOpen: false };
+  state = { date: null, time: null, calendarOpen: false };
   
   toggleCalendar = () => this.setState({ calendarOpen: !this.state.calendarOpen });
   
@@ -49,10 +49,10 @@ class Datepicker extends Component {
           
           <Styled.DatePickerInput
             type="text"
-            value={date ? date.split("-").join(" / ") : ""}
+            value={date ? date.split("-").reverse().join(" / ") : ""}
             onChange={this.handleChange}
             readOnly="readonly"
-            placeholder="ГГГГ / ММ / ДД"
+            placeholder="ДД / ММ / ГГГГ ЧЧ:мм"
           />
         </Styled.DatePickerFormGroup>
         
