@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Calendar from '../Calendar';
+import Timepicker from '../Timepicker';
 import * as Styled from './styles';
 import { isDate, getDateISO } from "../../helpers/calendar";
 
@@ -40,7 +41,9 @@ class Datepicker extends Component {
   
   render() {
     const { label } = this.props;
-    const { date, calendarOpen } = this.state;
+    const { date, time, calendarOpen} = this.state;
+    const dateStr = date ? date.split("-").reverse().join(" / ") : "";
+    const timeStr = time ? time : '??:??';
     
     return (
       <Styled.DatePickerContainer>
@@ -49,7 +52,7 @@ class Datepicker extends Component {
           
           <Styled.DatePickerInput
             type="text"
-            value={date ? date.split("-").reverse().join(" / ") : ""}
+            value={`${dateStr} ${timeStr}`}
             onChange={this.handleChange}
             readOnly="readonly"
             placeholder="ДД / ММ / ГГГГ ЧЧ:мм"
@@ -61,7 +64,7 @@ class Datepicker extends Component {
           
           <Styled.DatePickerDropdownMenu>
             {calendarOpen && (
-              <Calendar date={date && new Date(date)} onDateChanged={this.handleDateChange} />
+              <Calendar time={time} date={date && new Date(date)} onDateChanged={this.handleDateChange} />
             )}
           </Styled.DatePickerDropdownMenu>
         </Styled.DatePickerDropdown>

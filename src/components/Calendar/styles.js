@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import {Dropdown, DropdownMenu, DropdownToggle} from "reactstrap";
 
 export const Arrow = styled.button`
   appearance: none;
@@ -122,4 +123,33 @@ export const TodayCalendarDate = styled(HighlightedCalendarDate)`
     color: #06c !important;
     background: rgba(0, 102, 204, .075) !important;
   }
+`;
+
+export const TimePickerDropdown = styled(Dropdown)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+`;
+
+export const TimePickerDropdownToggle = styled(DropdownToggle)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  opacity: 0;
+  filter: alpha(opacity=0);
+`;
+
+export const TimePickerDropdownMenu = styled(DropdownMenu)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  transform: none !important;
 `;

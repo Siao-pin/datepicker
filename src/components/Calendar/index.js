@@ -11,14 +11,29 @@ import calendar, {
   WEEK_DAYS,
   CALENDAR_MONTHS
 } from '../../helpers/calendar';
+import Timepicker from "../Timepicker";
 
 class Calendar extends Component {
   state = {
     ...this.resolveStateFromProp(), 
+    time: this.props.time,
     today: new Date(),
-    isTimepickerOpen: false,
+    TimepickerOpen: false,
   };
- 
+
+  handleTimeChange = time  => {
+    const { onDateChanged } = this.props;
+
+    this.state.time !== time &&
+    this.setState({...this.state, ...{ time, timepickerOpen: false }}, () => {
+      typeof onDateChanged === 'function' && onDateChanged(this.state.date);
+    });
+  };
+  
+  handleTimeClose = () => {
+    this.setState({...this.state, ...{ timepickerOpen: false }});
+  };
+
   resolveStateFromDate(date) {
     const isDateObject = isDate(date);
     const _date = isDateObject ? date : new Date();
@@ -70,6 +85,16 @@ class Calendar extends Component {
     const calendarYear = year || current.getFullYear();
     
     return calendar(calendarMonth, calendarYear);
+  };
+  
+  openTimepicker = date => evt => {
+    evt && evt.preventDefault();
+    
+    this.setState({
+      ...this.state, 
+      ...{ timepickerOpen: true },
+      ...this.resolveStateFromDate(date)
+    });
   };
   
   gotoDate = date => evt => {
@@ -179,7 +204,8 @@ class Calendar extends Component {
     
     const inMonth = month && year && isSameMonth(_date, new Date([year, month, 1].join("-")));
     
-    const onClick = this.gotoDate(_date);
+    // const onClick = this.gotoDate(_date);
+    const onClick = this.openTimepicker(_date);
     
     const props = { index, inMonth, onClick, title: _date.toDateString() };
     
@@ -197,6 +223,8 @@ class Calendar extends Component {
   };
   
   render() {
+    const { time, timepickerOpen } = this.state;
+    
     return (
       <Styled.CalendarContainer>
         {this.renderMonthAndYear()}
@@ -210,6 +238,14 @@ class Calendar extends Component {
             {this.getCalendarDates().map(this.renderCalendarDate)}
           </Fragment>
         </Styled.CalendarGrid>
+
+        {timepickerOpen && (
+          <Timepicker 
+            time={time} 
+            onTimeChanged={this.handleTimeChange} 
+            onCancel={this.handleTimeClose} 
+          />
+        )}
       </Styled.CalendarContainer>  
     );
   }
