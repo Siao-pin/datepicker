@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Calendar from '../Calendar';
-import Timepicker from '../Timepicker';
 import * as Styled from './styles';
 import { isDate, getDateISO } from "../../helpers/calendar";
 
@@ -12,13 +11,13 @@ class Datepicker extends Component {
   
   handleChange = evt => evt.preventDefault();
   
-  handleDateChange = date => {
+  handleDateChange = (date, time) => {
     const { onDateChanged } = this.props;
     const { date: currentDate } = this.state;
     const newDate = date ? getDateISO(date) : null;
     
-    currentDate !== newDate &&
-      this.setState({ date: newDate, calendarOpen: false }, () => {
+    (currentDate !== newDate || time !== this.time) &&
+      this.setState({ date: newDate, time, calendarOpen: false }, () => {
         typeof onDateChanged === 'function' && onDateChanged(this.state.date);  
       });
   };
@@ -44,6 +43,7 @@ class Datepicker extends Component {
     const { date, time, calendarOpen} = this.state;
     const dateStr = date ? date.split("-").reverse().join(" / ") : "";
     const timeStr = time ? time : '??:??';
+    const value = date ? `${dateStr} ${timeStr}` : '';
     
     return (
       <Styled.DatePickerContainer>
@@ -52,7 +52,7 @@ class Datepicker extends Component {
           
           <Styled.DatePickerInput
             type="text"
-            value={`${dateStr} ${timeStr}`}
+            value={value}
             onChange={this.handleChange}
             readOnly="readonly"
             placeholder="ДД / ММ / ГГГГ ЧЧ:мм"

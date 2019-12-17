@@ -125,6 +125,15 @@ export const TodayCalendarDate = styled(HighlightedCalendarDate)`
   }
 `;
 
+export const PastCalendarDate = styled(CalendarDate)`
+  color: #ddd !important;
+  cursor: not-allowed;
+  :hover {
+    color: #ddd !important;
+    background: transparent !important;
+  }
+`;
+
 export const TimePickerDropdown = styled(Dropdown)`
   position: absolute;
   width: 100%;

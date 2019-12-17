@@ -38,3 +38,11 @@ export const TimepickerTimeSlotHighlighted = styled(TimepickerTimeSlot)`
   }
 `;
 
+export const TimepickerTimeSlotDisabled = styled(TimepickerTimeSlot)`
+  color: #ddd;
+  :hover {
+    color: #ddd;
+  }
+  cursor: not-allowed;
+`;
+

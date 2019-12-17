@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import * as Styled from './styles';
 import { generateTimeSlots } from '../../helpers/time_slots';
+import { isSameDay } from '../../helpers/calendar';
 
 class Timepicker extends Component {
   state = { time: null, step: 30 };
@@ -11,15 +12,43 @@ class Timepicker extends Component {
     
     (time || newStep) && this.setState({ ...this.state, ...{ time, step: newStep } });
   }
+  
+  timeChangeHandler = (time) => {
+    this.setState({...this.state, ...{ time }}, () => {
+      this.props.onTimeChanged(time);  
+    });  
+  };
  
   renderTimeSlot = (time, index) => {
+    const { date, today } = this.props;
+
+    const [hour, minute] = time.split(':');
+    const curTime = today;
+    curTime.setHours(+hour);
+    curTime.setMinutes(+minute);
+    
+    const isDisabled = isSameDay(date, today) 
+      && curTime.getTime() <= (new Date()).getTime();
+    
+    if (isDisabled) {
+      return null;
+    }
+    
     const TimeSlotComponent = time === this.state.time 
       ? Styled.TimepickerTimeSlotHighlighted
-      : Styled.TimepickerTimeSlot
+      : isDisabled
+        ? Styled.TimepickerTimeSlotDisabled
+        : Styled.TimepickerTimeSlot
     ;
+
+    const props = {key: index};
+    
+    if (!isDisabled) {
+      props.onClick = () => this.timeChangeHandler(time);  
+    }
     
     return (
-      <TimeSlotComponent key={index} onClick={() => { this.props.onTimeChanged(time)}}>
+      <TimeSlotComponent {...props}>
         {time}
       </TimeSlotComponent>
     )

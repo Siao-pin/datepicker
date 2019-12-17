@@ -26,7 +26,7 @@ class Calendar extends Component {
 
     this.state.time !== time &&
     this.setState({...this.state, ...{ time, timepickerOpen: false }}, () => {
-      typeof onDateChanged === 'function' && onDateChanged(this.state.date);
+      typeof onDateChanged === 'function' && onDateChanged(this.state.current, this.state.time);
     });
   };
   
@@ -92,20 +92,12 @@ class Calendar extends Component {
     
     this.setState({
       ...this.state, 
-      ...{ timepickerOpen: true },
-      ...this.resolveStateFromDate(date)
+      ...{ 
+        timepickerOpen: true, 
+        time: isSameDay(this.state.current, date) ? this.state.time : null 
+      },
+      ...this.resolveStateFromDate(date),
     });
-  };
-  
-  gotoDate = date => evt => {
-    evt && evt.preventDefault();
-    const { current } = this.state;
-    const { onDateChanged } = this.props;
-    
-    !(current && isSameDay(date, current)) &&
-      this.setState(this.resolveStateFromDate(date), () => {
-        typeof onDateChanged === 'function' && onDateChanged(date);  
-      });
   };
   
   gotoPreviousMonth = () => {
@@ -204,17 +196,22 @@ class Calendar extends Component {
     
     const inMonth = month && year && isSameMonth(_date, new Date([year, month, 1].join("-")));
     
-    // const onClick = this.gotoDate(_date);
-    const onClick = this.openTimepicker(_date);
+    const props = { index, inMonth, title: _date.toDateString() };
     
-    const props = { index, inMonth, onClick, title: _date.toDateString() };
+    const isDateActive = today.getTime() < _date.getTime() || isToday;
+    
+    if (isDateActive) {
+      props.onClick = this.openTimepicker(_date);   
+    }
     
     const DateComponent = isCurrent
       ? Styled.HighlightedCalendarDate
       : isToday
         ? Styled.TodayCalendarDate
-        : Styled.CalendarDate;
-    
+        : isDateActive
+          ? Styled.CalendarDate
+          : Styled.PastCalendarDate;
+
     return (
       <DateComponent key={getDateISO(_date)} {...props}>  
         {_date.getDate()}
@@ -241,6 +238,8 @@ class Calendar extends Component {
 
         {timepickerOpen && (
           <Timepicker 
+            date={this.state.current}
+            today={this.state.today}
             time={time} 
             onTimeChanged={this.handleTimeChange} 
             onCancel={this.handleTimeClose} 
